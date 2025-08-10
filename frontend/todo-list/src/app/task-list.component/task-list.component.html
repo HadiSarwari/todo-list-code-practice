@@ -22,15 +22,19 @@
 
 <!-- Context Menu -->
 @if (contextMenuVisible) {
-  <div
-    class="context-menu"
+  <div id="context-menu" class="context-menu"
     [style.left.px]="menuX"
     [style.top.px]="menuY"
     (click)="hideContextMenu()"
   >
     <ul>
+      <li class="disabled">Open</li>
+      <li class="disabled">Rename</li>
+      <li class="disabled">Move</li>
+      <li class="disabled">Send</li>
+      <li class="separator" aria-hidden="true"></li>
       @if (contextMenuTask) {
-        <li (click)="deleteTask(contextMenuTask)">Delete</li>
+        <li (click)="deleteTask(contextMenuTask)"> Delete </li>
       }
     </ul>
   </div>

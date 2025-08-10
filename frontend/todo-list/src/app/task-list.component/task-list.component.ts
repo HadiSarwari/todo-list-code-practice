@@ -117,14 +117,15 @@ showContextMenu(data: { event: MouseEvent; task: Task }) {
   this.contextMenuTask = data.task;
 }
 
-@HostListener('document:click', ['$event'])
+@HostListener('document:mousedown', ['$event'])
   onDocumentClick(event: MouseEvent) {
+    // only left-click closes
+  if (event.button !== 0) return;
     // Check if the click target is outside the context menu
-    const target = event.target as HTMLElement;
-    const contextMenu = document.querySelector('.context-menu');
-    if (this.contextMenuVisible && contextMenu && !contextMenu.contains(target)) {
-      this.hideContextMenu();
-    }
+    const menu = document.getElementById('context-menu');
+  if (this.contextMenuVisible && menu && !menu.contains(event.target as Node)) {
+    this.contextMenuVisible = false;
+  }
   }
 
 hideContextMenu() {
