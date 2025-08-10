@@ -1,0 +1,49 @@
+<h2>{{title}}</h2>
+<!-- Task list with drag-and-drop support -->
+<ul
+  class="task-list"
+  cdkDropList
+  (cdkDropListDropped)="drop($event)"
+>
+<!-- Loop through tasks and render each one using TaskTileComponent -->
+  
+@for (task of sortedTasks; track task.id) {
+  <li cdkDrag>
+    <!-- Pass task data to task-tile component -->
+    <!-- Listen to toggleChecked event and handle it in toggleChecked() method -->
+    <app-task-tile
+      [task]="task"
+      (toggleChecked)="toggleChecked($event)"
+      (openMenu)="showContextMenu($event)">
+    </app-task-tile>
+  </li>
+}
+
+
+<!-- Context Menu -->
+@if (contextMenuVisible) {
+  <div
+    class="context-menu"
+    [style.left.px]="menuX"
+    [style.top.px]="menuY"
+    (click)="hideContextMenu()"
+  >
+    <ul>
+      @if (contextMenuTask) {
+        <li (click)="deleteTask(contextMenuTask)">Delete</li>
+      }
+    </ul>
+  </div>
+}
+
+
+<!-- Add new task input -->
+<div class="add-task">
+  <input
+    type="text"
+    placeholder="Add a task"
+    #taskInput
+    (keydown.enter)="addTask(taskInput.value); taskInput.value = ''"
+  />  
+</div>
+

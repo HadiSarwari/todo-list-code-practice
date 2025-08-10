@@ -1,0 +1,101 @@
+/* Context menu styling */
+.context-menu {
+  position: fixed;
+  background: white;
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  z-index: 1000;
+  border-radius: 6px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #333;
+    gap: 8px;
+  }
+
+  /* Red trash icon background & text for delete */
+  li.delete {
+    color: #d93025; /* Google red for "Delete" */
+  }
+
+  li:hover {
+    background: #f0f0f0;
+  }
+
+  /* Example icon style if you use inline SVG or font icon */
+  li svg {
+    fill: #d93025;
+    width: 16px;
+    height: 16px;
+  }
+}
+
+/* The main task list container */
+.task-list {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+
+  /* Background with horizontal lines spaced like one tile height */
+  background-image: repeating-linear-gradient(
+    to bottom,
+    #e0e0e0,
+    #e0e0e0 1px,
+    transparent 1px,
+    transparent 40px
+  );
+  /* 40px = approx tile height, adjust if needed */
+}
+
+/* Each task tile */
+.task-list li {
+  background: #f5f5f5; /* light grey background */
+  border-radius: 4px;
+  margin: 6px 12px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+
+  &:hover {
+    background: white; /* white on hover */
+  }
+}
+
+
+/* Drag preview styling: remove bullet and match tile style */
+.cdk-drag-preview {
+  list-style-type: none !important;
+  padding-left: 0 !important;
+  margin: 0 !important;
+  background: #f5f5f5;
+  border-radius: 4px;
+  padding: 12px 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Drag placeholder styling */
+.cdk-drag-placeholder {
+  list-style-type: none !important;
+}
+
+/* Optional: smooth transition for checkbox and text */
+.task-list li input[type="checkbox"],
+.task-list li p {
+  transition: all 0.3s ease;
+}
+
+
