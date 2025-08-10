@@ -1,51 +1,53 @@
-.task-tile {
-    display: flex;
-    align-items: center;
-    background-color: aqua;
-    border: 1px solid #ddd;
-    padding: 1rem;
-    margin-bottom: 1rem;
-    border-radius: 4px;
-    gap: 10px;
-}
+.task-tile { display:flex; align-items:center; gap:12px; width:100%; background:transparent; border:0; padding:0; margin:0; }
 
-/* Strike-through text when checkbox is checked */
-input[type="checkbox"]:checked + p {
-    text-decoration: line-through;
-    color: #777; /* make it look faded */
-}
+.task-text { margin:0; flex:1; font-size:16px; color:#1f2937; line-height:1.25; }
+input[type="checkbox"]:checked + .task-text { text-decoration: line-through; color:#6b7280; }
 
-/* Remove default checkbox style */
-input[type="checkbox"] {
-    appearance: none;
-    -webkit-appearance: none;
-    width: 22px;
-    height: 22px;
-    border: 2px solid #888;
-    border-radius: 50%; /* make it round */
-    cursor: pointer;
-    position: relative;
-    outline: none;
-    transition: all 0.2s ease;
-    background-color: white;
+/* Round checkbox */
+input[type="checkbox"]{
+  appearance:none; -webkit-appearance:none;
+  width:22px; height:22px; border:2px solid #c7cfdf; border-radius:50%; background:#fff;
+  position:relative; cursor:pointer; outline:none;
+  transition: border-color .2s, background-color .2s, box-shadow .2s;
 }
-
-/* Checked state style */
-input[type="checkbox"]:checked {
-    background-color: #4cafef; /* nice blue like Microsoft To Do */
-    border-color: #4cafef;
-}
-
-/* Add a check mark */
+input[type="checkbox"]:hover { border-color:#1a73e8; }
+input[type="checkbox"]:checked { background:#1a73e8; border-color:#1a73e8; }
 input[type="checkbox"]:checked::after {
-    content: '';
-    position: absolute;
-    left: 6px;
-    top: 2px;
-    width: 6px;
-    height: 12px;
-    border: solid white;
-    border-width: 0 2px 2px 0;
-    transform: rotate(45deg);
+  content:""; position:absolute; left:6px; top:2px; width:6px; height:12px;
+  border:solid #fff; border-width:0 2px 2px 0; transform:rotate(45deg);
 }
 
+/* Round checkbox – Microsoft To Do style */
+input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 22px; height: 22px;
+  border: 2px solid #c7cfdf;
+  border-radius: 50%;
+  background: #fff;
+  position: relative;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+input[type="checkbox"]:hover {
+  border-color: #1a73e8;
+}
+input[type="checkbox"]:checked {
+  background-color: #1a73e8;
+  border-color: #1a73e8;
+}
+input[type="checkbox"]:checked::after {
+  content: "";
+  position: absolute;
+  left: 6px; top: 2px;
+  width: 6px; height: 12px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* Optional: small star / actions on the right */
+.actions {
+  display: flex; align-items: center; gap: 10px;
+}

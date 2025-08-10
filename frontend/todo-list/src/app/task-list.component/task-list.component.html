@@ -1,4 +1,4 @@
-<h2>{{title}}</h2>
+<h1 class="page-title" >{{title}}</h1>
 <!-- Task list with drag-and-drop support -->
 <ul
   class="task-list"
@@ -37,13 +37,19 @@
 }
 
 
-<!-- Add new task input -->
-<div class="add-task">
-  <input
-    type="text"
-    placeholder="Add a task"
-    #taskInput
-    (keydown.enter)="addTask(taskInput.value); taskInput.value = ''"
-  />  
+
+<!-- fixed, centered footer that holds the add tile -->
+<div class="footer-rail">
+  <div class="add-tile" [class.typing]="addTypingClass">
+    <input type="checkbox" />
+    <input
+      class="new-task-input"
+      type="text"
+      placeholder="Add a task"
+      #taskInput
+      (input)="addTypingClass = taskInput.value.trim().length > 0"
+      (keydown.enter)="addTask(taskInput.value.trim()); taskInput.value=''; addTypingClass=false"
+    />    
+  </div>
 </div>
 

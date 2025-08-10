@@ -1,101 +1,154 @@
-/* Context menu styling */
-.context-menu {
-  position: fixed;
-  background: white;
-  border: 1px solid #ccc;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-  z-index: 1000;
-  border-radius: 6px;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+/* task-list.component.scss */
 
-  ul {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
+/* ===== Tunables ===== */
+:host {
+  --tile-h: 56px;                 /* tile content height */
+  --tile-vgap: 16px;              /* vertical gap between tiles */
 
-  li {
-    display: flex;
-    align-items: center;
-    padding: 8px 12px;
-    cursor: pointer;
-    font-size: 14px;
-    color: #333;
-    gap: 8px;
-  }
+  --tile-radius: 12px;
+  --tile-shadow: 0 2px 6px rgba(0,0,0,.08);
 
-  /* Red trash icon background & text for delete */
-  li.delete {
-    color: #d93025; /* Google red for "Delete" */
-  }
+  --column-max: 1080px;           /* column width */
+  --side-pad: 24px;
 
-  li:hover {
-    background: #f0f0f0;
-  }
+  /* Blue background (Microsoft To Do-ish) */
+  --bg-top: #5a76f3;
+  --bg-bottom: #6b8cf2;
 
-  /* Example icon style if you use inline SVG or font icon */
-  li svg {
-    fill: #d93025;
-    width: 16px;
-    height: 16px;
-  }
+  display: block;
+  min-height: 100vh;
+
+  /* NO LINES — just gradient */
+  background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+  background-attachment: fixed;
+
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* The main task list container */
+/* Centered column */
 .task-list {
-  list-style: none;
-  padding-left: 0;
-  margin: 0;
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  width: calc(100% - var(--side-pad) * 6);   /* fill page width (minus tiny gutter) */
+  padding: 24px var(--side-pad) 0;
 
-  /* Background with horizontal lines spaced like one tile height */
-  background-image: repeating-linear-gradient(
-    to bottom,
-    #e0e0e0,
-    #e0e0e0 1px,
-    transparent 1px,
-    transparent 40px
-  );
-  /* 40px = approx tile height, adjust if needed */
+  /* keep last tile clear of fixed footer */
+  padding-bottom: calc(var(--tile-h) + 56px);
 }
 
-/* Each task tile */
+/* Tiles */
 .task-list li {
-  background: #f5f5f5; /* light grey background */
-  border-radius: 4px;
-  margin: 6px 12px;
+  width: 100%;
+  min-height: var(--tile-h);
+  margin: calc(var(--tile-vgap) / 2) 0;
   padding: 12px 16px;
+
   display: flex;
   align-items: center;
   gap: 12px;
-  transition: background-color 0.3s ease;
-  cursor: pointer;
 
-  &:hover {
-    background: white; /* white on hover */
-  }
+  background: #fff;
+  border: 1px solid rgba(0,0,0,.04);
+  border-radius: var(--tile-radius);
+  box-shadow: var(--tile-shadow);
+  transition: box-shadow .2s ease, background-color .2s ease;
 }
+.task-list li:hover { box-shadow: 0 4px 12px rgba(0,0,0,.12); }
 
-
-/* Drag preview styling: remove bullet and match tile style */
+/* Drag visuals */
 .cdk-drag-preview {
-  list-style-type: none !important;
-  padding-left: 0 !important;
-  margin: 0 !important;
-  background: #f5f5f5;
-  border-radius: 4px;
+  list-style: none !important;
+  background: #fff;
+  border-radius: var(--tile-radius);
   padding: 12px 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 20px rgba(0,0,0,.15);
+}
+.cdk-drag-placeholder { opacity: .4; }
+
+/* Fixed footer rail that centers the add tile */
+.footer-rail {
+  position: fixed;
+  left: 0; right: 0;
+  bottom: max(env(safe-area-inset-bottom, 0px), 16px);
+  display: flex;
+  justify-content: center;
+  padding: 0 var(--side-pad);
+  pointer-events: none;
+  z-index: 10;
 }
 
-/* Drag placeholder styling */
-.cdk-drag-placeholder {
-  list-style-type: none !important;
+.footer-rail .add-tile {
+  pointer-events: auto;
+  width: calc(100% - var(--side-pad) * 2);   /* fill page width (minus tiny gutter) */
+  min-height: var(--tile-h);
+  padding: 12px 16px;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  background: #fff;
+  border: 1px solid rgba(0,0,0,.04);
+  border-radius: var(--tile-radius);
+  box-shadow: var(--tile-shadow);
 }
 
-/* Optional: smooth transition for checkbox and text */
-.task-list li input[type="checkbox"],
-.task-list li p {
-  transition: all 0.3s ease;
+/* Add-tile input */
+.add-tile .new-task-input {
+  flex: 1;
+  border: 0;
+  outline: none;
+  background: transparent;
+  font-size: 16px;
+}
+.add-tile .new-task-input::placeholder { color: #8a9bb9; }
+
+/* Show checkbox only when typing (class-based) */
+.add-tile input[type="checkbox"] {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .15s ease;
+}
+.add-tile.typing input[type="checkbox"] {
+  opacity: 1;
+  pointer-events: auto;
 }
 
+/* Context menu */
+.context-menu {
+  position: fixed; z-index: 1000;
+  background: #fff;
+  border: 1px solid #dfe3ea;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.15);
 
+  ul { margin: 0; padding: 6px 0; list-style: none; }
+  li {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 14px; cursor: pointer; font-size: 14px; color: #374151;
+  }
+  li:hover { background: #f3f4f6; }
+  li.delete { color: #d93025; }
+}
+
+/* Centered, clean page title */
+.page-title {
+  /* match the list width and center it */
+  width: min(var(--column-max), calc(100% - var(--side-pad) * 2));
+  margin: 24px auto 8px;
+  padding: 8px 4px;
+
+  text-align: center;
+  color: #fff;
+
+  /* typography */
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: 700;
+  font-size: clamp(22px, 2.8vw, 36px);
+  letter-spacing: 0.2px;
+  line-height: 1.2;
+
+  /* subtle pop over the blue gradient */
+  text-shadow: 0 1px 0 rgba(0,0,0,.25);
+}

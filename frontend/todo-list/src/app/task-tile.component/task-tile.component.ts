@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, HostListener,input, Output } from '@angular/core';
 import { Task } from '../models/task.model';
 
 /**
@@ -17,9 +17,9 @@ export class TaskTileComponent {
 /** Event emitted when user righ-click on the task */
 @Output() openMenu = new EventEmitter<{ event: MouseEvent; task: Task }>();
 // Output event emitter to notify parent when checked state toggles
-  @Output() toggleChecked = new EventEmitter<Task>();
+@Output() toggleChecked = new EventEmitter<Task>();
 
-  openContextMenu(event: MouseEvent): void {
+openContextMenu(event: MouseEvent): void {
     event.preventDefault(); // Prevent the browser's right-click menu
     if (this.task) {
       this.openMenu.emit({ event, task: this.task });

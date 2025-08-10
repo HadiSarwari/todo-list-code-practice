@@ -30,6 +30,7 @@ export class TaskListComponent implements OnInit {
   menuX = 0;
   menuY = 0;
   contextMenuTask?: Task;
+  addTypingClass: any;
 
 
   constructor(private taskDataService: TaskDataService){  }
@@ -107,6 +108,8 @@ export class TaskListComponent implements OnInit {
   return task.id;
 }
   
+
+
 showContextMenu(data: { event: MouseEvent; task: Task }) {
   this.contextMenuVisible = true;
   this.menuX = data.event.clientX;
