@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { Task } from '../models/task.model';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
+
 
 /**
  * Handles all CRUD operations for tasks by communicating with the backend API.
@@ -12,7 +14,7 @@ import { Observable } from 'rxjs';
 })
 export class TaskDataService {  
  /** Base URL of the backend API */
-  private baseUrl = 'https://localhost:7181';
+  private baseUrl = environment.apiBaseUrl;
   constructor(private http: HttpClient){}
 
  /**
