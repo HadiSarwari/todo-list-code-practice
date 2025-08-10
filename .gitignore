@@ -26,4 +26,15 @@ obj/
 Thumbs.db
 
 # Visual Studio workspace
+.vs/.vs/
+bin/
+obj/
+node_modules/
+dist/
+coverage/
 .vs/
+bin/
+obj/
+node_modules/
+dist/
+coverage/
