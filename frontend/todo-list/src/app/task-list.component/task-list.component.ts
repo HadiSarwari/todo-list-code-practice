@@ -132,11 +132,6 @@ hideContextMenu() {
   this.contextMenuVisible = false;
 }
 
-get sortedTasks() {
-  return this.tasks.slice().sort((a, b) => Number(a.checked) - Number(b.checked));
-}
-
-
 toggleChecked(task: Task) {
   task.checked = !task.checked;
 

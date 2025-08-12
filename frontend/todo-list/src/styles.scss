@@ -1,1 +1,46 @@
 /* You can add global styles to this file, and also import other style files */
+/* Reusable To-Do checkbox: circular, hover/checked like Microsoft To Do */
+input.todo-checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #9aa0a6;
+  border-radius: 50%;
+  background: transparent;
+  position: relative;
+  vertical-align: middle;
+  cursor: pointer;
+  transition: border-color .2s, background-color .2s, box-shadow .2s;
+}
+
+input.todo-checkbox:hover { border-color: #1a73e8; }
+
+input.todo-checkbox:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(26,115,232,.3);
+  border-color: #1a73e8;
+}
+
+input.todo-checkbox:checked {
+  background-color: #1a73e8;
+  border-color: #1a73e8;
+}
+
+input.todo-checkbox:checked::after {
+  content: "";
+  position: absolute;
+  left: 5px;           /* tweak if your circle size differs */
+  top: 2px;
+  width: 6px;
+  height: 10px;
+  border: 2px solid #fff;
+  border-top: 0;
+  border-left: 0;
+  transform: rotate(45deg); /* white tick */
+}
+
+html, body { height: 100%; }
+body { margin: 0; }              /* kills the sneaky 8px default margin */
+html, body { overflow: hidden; } /* prevents page-level scrolling */
+app-root { height: 100%; overflow: hidden; display: block; }

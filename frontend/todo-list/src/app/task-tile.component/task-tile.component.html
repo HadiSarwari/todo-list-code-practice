@@ -1,7 +1,7 @@
 <div class="task-tile" (contextmenu)="openContextMenu($event)">
 <!-- Checkbox input bound to task.checked -->
 <!-- When checkbox value changes (checked/unchecked), call onCheckedChange() -->
-  <input type="checkbox" 
+  <input type="checkbox" class ="todo-checkbox" 
     [checked]=task?.checked 
     (change)="onCheckedChange()"
     />

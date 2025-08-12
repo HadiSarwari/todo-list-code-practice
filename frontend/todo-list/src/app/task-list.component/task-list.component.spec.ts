@@ -75,11 +75,4 @@ describe('TaskListComponent', () => {
     const found = component.tasks.find(t => t.id === t0.id)!;
     expect(found.checked).toBe(updated.checked);
   });
-
-  it('sortedTasks lists unchecked first', () => {
-    fixture.detectChanges();
-    const sorted = component.sortedTasks;
-    expect(sorted[0].checked).toBeFalse();
-    expect(sorted[sorted.length - 1].checked).toBeTrue();
-  });
 });

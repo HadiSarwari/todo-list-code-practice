@@ -1,30 +1,71 @@
 <h1 class="page-title" >{{title}}</h1>
 <!-- Task list with drag-and-drop support -->
-<ul
-  class="task-list"
-  cdkDropList
-  (cdkDropListDropped)="drop($event)"
->
-<!-- Loop through tasks and render each one using TaskTileComponent -->
-  
-@for (task of sortedTasks; track task.id) {
-  <li cdkDrag>
-    <!-- Pass task data to task-tile component -->
-    <!-- Listen to toggleChecked event and handle it in toggleChecked() method -->
-    <app-task-tile
-      [task]="task"
-      (toggleChecked)="toggleChecked($event)"
-      (openMenu)="showContextMenu($event)">
-    </app-task-tile>
+
+<div class="task-pane">
+  <div class="task-scroll">
+    <ul class="task-list"  cdkDropList (cdkDropListDropped)="drop($event)" >      
+      <!-- Loop through ticked tasks and render each one using TaskTileComponent -->
+        @for (task of tasks; track task.id) {
+          @if (!task.checked) {
+            <li cdkDrag>
+            <!-- Pass task data to task-tile component -->
+            <!-- Listen to toggleChecked event and handle it in toggleChecked() method -->
+            <app-task-tile 
+              [task]="task"
+              (toggleChecked)="toggleChecked($event)"
+              (openMenu)="showContextMenu($event)">
+            </app-task-tile>
+            </li>
+          }
+        }
+
+      <!-- Divider: the “Completed” button -->
+      <li class="completed-toggle" cdkDragDisabled>
+        <button type="button">Completed</button>
+      </li>
+
+      <!-- Loop through unticked tasks and render each one using TaskTileComponent -->
+        @for (task of tasks; track task.id) {
+          @if (task.checked) {
+            <li cdkDragDisabled >
+            <!-- Pass task data to task-tile component -->
+            <!-- Listen to toggleChecked event and handle it in toggleChecked() method -->
+            <app-task-tile
+              [task]="task"
+              (toggleChecked)="toggleChecked($event)"
+              (openMenu)="showContextMenu($event)">
+            </app-task-tile>
+            </li>
+          }
+        }
+      </ul>
+  </div>
+  <!-- Add row lives outside the scroller so it stays docked -->
+  <ul class="task-list">
+  <li class="add-tile" [class.typing]="addTypingClass">
+    <input type="checkbox" class="todo-checkbox" tabindex="-1" />
+    <input
+      class="new-task-input"
+      type="text"
+      placeholder="Add a task"
+      #taskInput
+      (input)="addTypingClass = taskInput.value.trim().length > 0"
+      (keydown.enter)="addTask(taskInput.value.trim()); taskInput.value=''; addTypingClass=false"
+    />
   </li>
-}
+  </ul>
+</div>
+
 
 
 <!-- Context Menu -->
 @if (contextMenuVisible) {
-  <div id="context-menu" class="context-menu"
+  <div
+    id="context-menu"
+    class="context-menu"
     [style.left.px]="menuX"
     [style.top.px]="menuY"
+    role="menu"
     (click)="hideContextMenu()"
   >
     <ul>
@@ -34,26 +75,16 @@
       <li class="disabled">Send</li>
       <li class="separator" aria-hidden="true"></li>
       @if (contextMenuTask) {
-        <li (click)="deleteTask(contextMenuTask)"> Delete </li>
+        <li (click)="deleteTask(contextMenuTask)">Delete</li>
       }
     </ul>
   </div>
 }
 
+    
 
 
-<!-- fixed, centered footer that holds the add tile -->
-<div class="footer-rail">
-  <div class="add-tile" [class.typing]="addTypingClass">
-    <input type="checkbox" />
-    <input
-      class="new-task-input"
-      type="text"
-      placeholder="Add a task"
-      #taskInput
-      (input)="addTypingClass = taskInput.value.trim().length > 0"
-      (keydown.enter)="addTask(taskInput.value.trim()); taskInput.value=''; addTypingClass=false"
-    />    
-  </div>
-</div>
+
+
+
 
