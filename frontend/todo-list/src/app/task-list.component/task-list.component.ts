@@ -24,6 +24,7 @@ export class TaskListComponent implements OnInit {
    /** Page title */
   title : string = "My Task List";
    /** Array of tasks displayed in the list */
+  showCompleted = true;
   tasks: Task[]=[];
 
   contextMenuVisible = false;
@@ -150,4 +151,7 @@ toggleChecked(task: Task) {
   });
 }
 
+get completedCount(): number {
+  return this.tasks.reduce((n, t) => n + (t.checked ? 1 : 0), 0);
+}
 }

@@ -25,11 +25,18 @@
   min-height: 100vh;
 
   /* NO LINES — just gradient */
-  background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+ background:
+    linear-gradient(180deg, rgba(90,118,243,0.35) 0%, rgba(107,140,242,0.35) 100%),
+    url('../../assets/images/j.jpg') center right / cover no-repeat;
+
   background-attachment: fixed;
 
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
+
+
+
+
 
 /* ===== Layout containers (list scrolls, add row stays docked) ===== */
 .task-pane {
@@ -187,4 +194,54 @@
 .task-list li.completed-toggle:hover {
   background: transparent !important;
 }
+
+/* Pretty pill button for the Completed divider */
+.completed-toggle .completed-btn {
+  appearance: none;
+  -webkit-appearance: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  height: 36px;              /* tweak to taste */
+  padding: 0 14px;
+  border-radius: 9999px;     /* pill shape */
+  border: 1px solid rgba(0,0,0,.08);
+  background: #fff;          /* visible (not transparent) */
+  color: #1f2937;
+  box-shadow: 0 1px 2px rgba(0,0,0,.08);
+  cursor: pointer;
+  transition: background-color .15s, border-color .15s, box-shadow .15s, transform .05s;
+
+  /* align left edge with your tiles’ inner padding (optional) */
+  margin-left: 16px;
+}
+
+.completed-toggle .completed-btn:hover {
+  background: #f8fafc;
+  border-color: rgba(0,0,0,.12);
+  box-shadow: 0 2px 6px rgba(0,0,0,.10);
+}
+
+.completed-toggle .completed-btn:active {
+  transform: translateY(1px);
+}
+
+.completed-toggle .completed-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(26,115,232,.25);
+}
+
+/* arrow + badge */
+.completed-toggle .arrow { width: 1em; }
+.completed-toggle .count {
+  font-size: 12px;
+  line-height: 18px;
+  height: 18px;
+  padding: 0 8px;
+  border-radius: 9999px;
+  background: #e5edff;
+  color: #1a73e8;
+}
+
 

@@ -20,12 +20,22 @@
         }
 
       <!-- Divider: the “Completed” button -->
-      <li class="completed-toggle" cdkDragDisabled>
-        <button type="button">Completed</button>
-      </li>
+        @if(completedCount>0){
+          <li class="completed-toggle" cdkDragDisabled>
+          <button type="button"
+            class="completed-btn"
+            (click)="showCompleted = !showCompleted"
+            [attr.aria-expanded]="showCompleted">
+            <span class="arrow" aria-hidden="true">{{ showCompleted ? '▾' : '▸' }}</span>
+              Completed
+            <span class="count">{{ completedCount  }}</span>
+          </button>
+          </li>
+        }
 
       <!-- Loop through unticked tasks and render each one using TaskTileComponent -->
-        @for (task of tasks; track task.id) {
+       @if (showCompleted){
+          @for (task of tasks; track task.id) {
           @if (task.checked) {
             <li cdkDragDisabled >
             <!-- Pass task data to task-tile component -->
@@ -38,6 +48,8 @@
             </li>
           }
         }
+       }
+
       </ul>
   </div>
   <!-- Add row lives outside the scroller so it stays docked -->
