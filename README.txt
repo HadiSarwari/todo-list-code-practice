@@ -15,11 +15,12 @@ Run in Windows Sandbox (clean Windows, no installs on your PC)
      • A window “Angular” installing and starting the web app.
      • Your browser opens: http://localhost:4200
 
-3) (Optional) See tests pass
+3) (Optional) See tests pass— use CMD
    API tests:
      cd %USERPROFILE%\Desktop\todo-list-code-practice\api\TodoListApi.Tests
      dotnet test
-   UI tests (headless, needs Chrome):
+   UI tests (headless):requires Google Chrome installed inside the Sandbox.
+     If you want to run UI tests, install Chrome in the Sandbox first, then:
      cd %USERPROFILE%\Desktop\todo-list-code-practice\frontend\todo-list
      npx ng test --watch=false --browsers=ChromeHeadless
 
