@@ -1,6 +1,6 @@
 import { identifierName } from '@angular/compiler';
 import { Component, OnInit,HostListener } from '@angular/core';
-import { CommonModule } from '@angular/common'; // ✅ Import CommonModule
+import { CommonModule } from '@angular/common'; // Common Angular directives (e.g., ngIf/ngFor).
 import { TaskTileComponent } from '../task-tile.component/task-tile.component';
 import { Task } from '../models/task.model';
 import { TaskDataService } from '../services/task-data.service';
@@ -15,7 +15,7 @@ import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-
   imports: [
     CommonModule,
     TaskTileComponent,
-     DragDropModule,  // this import the drag and drop module
+     DragDropModule,  // Angular CDK drag & drop
   ],
   templateUrl: './task-list.component.html',
   styleUrls: ['./task-list.component.scss']
@@ -23,8 +23,9 @@ import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-
 export class TaskListComponent implements OnInit {
    /** Page title */
   title : string = "My Task List";
-   /** Array of tasks displayed in the list */
+  /** Whether the completed section is expanded. */
   showCompleted = true;
+  /** Tasks currently displayed in the list. */
   tasks: Task[]=[];
 
   contextMenuVisible = false;
@@ -32,6 +33,35 @@ export class TaskListComponent implements OnInit {
   menuY = 0;
   contextMenuTask?: Task;
   addTypingClass: any;
+
+  // Delete-confirmation modal state
+  confirmVisible = false;
+  pendingDeleteTask: Task | null = null;
+  
+  // Open the confirm modal
+  requestDelete(task: Task) {
+    this.pendingDeleteTask = task;
+    this.confirmVisible = true;
+    this.hideContextMenu(); // close menu if it’s open
+  }
+
+    // User clicked "Delete"
+  confirmDelete() {
+     const t = this.pendingDeleteTask;
+    if (!t) return;
+    // close modal first, then delete
+    this.confirmVisible = false;
+    this.pendingDeleteTask = null;
+    this.deleteTask(t); 
+
+}
+
+// User clicked "Cancel" or backdrop
+cancelDelete() {
+  this.confirmVisible = false;
+  this.pendingDeleteTask = null;
+}
+
 
 
   constructor(private taskDataService: TaskDataService){  }
@@ -76,13 +106,10 @@ export class TaskListComponent implements OnInit {
 
   }
  /**
-   * Delete a task from the list after user confirmation.
+   * Delete a task after user confirmation via modal.
    * @param task Task to be deleted.
    */
   deleteTask(task: Task): void {
-    if (!task) return;
-    if (!confirm(`Delete "${task.task}"?`)) return;
-
     this.taskDataService.deleteTask(task.id).subscribe({
       next: () => {
         this.tasks = this.tasks.filter(i => i.id !== task.id);
@@ -90,6 +117,9 @@ export class TaskListComponent implements OnInit {
       error: err => alert("Error deleting item")
     });
   }
+
+
+
 
   /**
    * Handles drag-and-drop reordering of tasks.
@@ -110,7 +140,7 @@ export class TaskListComponent implements OnInit {
 }
   
 
-
+/** Opens the context menu at the cursor for the given task. */
 showContextMenu(data: { event: MouseEvent; task: Task }) {
   this.contextMenuVisible = true;
   this.menuX = data.event.clientX;
@@ -129,6 +159,7 @@ showContextMenu(data: { event: MouseEvent; task: Task }) {
   }
   }
 
+/** Hides the context menu if open. */
 hideContextMenu() {
   this.contextMenuVisible = false;
 }
@@ -151,6 +182,7 @@ toggleChecked(task: Task) {
   });
 }
 
+/** Number of tasks marked as completed. */
 get completedCount(): number {
   return this.tasks.reduce((n, t) => n + (t.checked ? 1 : 0), 0);
 }

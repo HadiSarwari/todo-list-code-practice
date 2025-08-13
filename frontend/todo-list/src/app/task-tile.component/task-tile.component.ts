@@ -1,9 +1,7 @@
 import { Component, EventEmitter, Input, HostListener,input, Output } from '@angular/core';
 import { Task } from '../models/task.model';
 
-/**
- * Displays a single task tile, including the task text, checkbox.
- */
+/** Presents a single task with a checkbox and context-menu hook. */
 @Component({
   selector: 'app-task-tile',
   imports: [],
@@ -14,9 +12,9 @@ export class TaskTileComponent {
    /** Task object passed in from parent component */
 @Input() task?:Task;
 
-/** Event emitted when user righ-click on the task */
+/** Emitted on right-click to request a context menu. */
 @Output() openMenu = new EventEmitter<{ event: MouseEvent; task: Task }>();
-// Output event emitter to notify parent when checked state toggles
+// Notifies parent when the checked state changes
 @Output() toggleChecked = new EventEmitter<Task>();
 
 openContextMenu(event: MouseEvent): void {
@@ -25,7 +23,7 @@ openContextMenu(event: MouseEvent): void {
       this.openMenu.emit({ event, task: this.task });
     }
   }
-  // Called when checkbox changes value
+ // Emit the updated task when checkbox changes
   onCheckedChange() {
     if (this.task) {
       this.toggleChecked.emit(this.task);
