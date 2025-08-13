@@ -1,5 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
-/* Reusable To-Do checkbox: circular, hover/checked like Microsoft To Do */
+/* Reusable To-Do checkbox: circular, hover/checked */
 input.todo-checkbox {
   appearance: none;
   -webkit-appearance: none;
@@ -30,7 +30,7 @@ input.todo-checkbox:checked {
 input.todo-checkbox:checked::after {
   content: "";
   position: absolute;
-  left: 5px;           /* tweak if your circle size differs */
+  left: 5px;          
   top: 2px;
   width: 6px;
   height: 10px;

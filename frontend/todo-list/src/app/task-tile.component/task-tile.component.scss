@@ -1,9 +1,36 @@
+:host {
+  display: flex;
+  align-items: center;
+  width: 100%;
+   padding-right: 8px; 
+}
+
 .task-tile { display:flex; align-items:center; gap:12px; width:100%; background:transparent; border:0; padding:0; margin:0; }
 
 .task-text { margin:0; flex:1; font-size:16px; color:#1f2937; line-height:1.25; }
 input[type="checkbox"]:checked + .task-text { text-decoration: line-through; color:#6b7280; }
 
-/* Optional: small star / actions on the right */
+/* Optional actions area (e.g., decorative star) on the right */
 .actions {
   display: flex; align-items: center; gap: 10px;
 }
+
+/* Decorative star at the right end */
+.tile-star {
+  margin-left: auto;   
+  width: 18px; height: 18px; flex: 0 0 18px;
+
+  margin-right: 25;
+  /* color the SVG via mask so it inherits color nicely */
+  color: #9aa0a6;                  /* base gray */
+  background: currentColor;
+  -webkit-mask: url('../../assets/icons/star_24_regular.svg') no-repeat center / contain;
+          mask: url('../../assets/icons/star_24_regular.svg') no-repeat center / contain;
+
+  pointer-events: none;            /* decorative only; ignore pointer events */
+  transition: color .15s ease;
+   
+}
+
+/* Darken on hover */
+.task-tile:hover .tile-star { color: #6b7280; }

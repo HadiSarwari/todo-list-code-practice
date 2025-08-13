@@ -3,19 +3,18 @@
 /* ===== Tunables ===== */
 :host {
   --tile-h: 56px;                 /* tile content height */
-  --tile-vgap: 16px;              /* vertical gap between tiles */
-
-  --tile-radius: 12px;
-  --tile-shadow: 0 2px 6px rgba(0,0,0,.08);
+--tile-vgap: 2px;                 /* less space between tiles */
+--tile-radius: 4px;               /* less oval corners */
+--tile-shadow: 0 1px 3px rgba(0,0,0,.07); /* subtler default shadow */
 
   --column-max: 1080px;           /* column width */
   --side-pad: 24px;
 
-  /* Blue background (Microsoft To Do-ish) */
+  /* Blue gradient background */
   --bg-top: #5a76f3;
   --bg-bottom: #6b8cf2;
 
-  /* Fill the viewport so the add-row can dock at the bottom */
+  /* Fill viewport; add row docks at bottom */
   display: flex;
   flex-direction: column;
   height: 100svh;   /* was: min-height */
@@ -24,8 +23,8 @@
   min-height: 100svh;
   min-height: 100vh;
 
-  /* NO LINES — just gradient */
- background:
+  /* Background: gradient only */
+   background:
     linear-gradient(180deg, rgba(90,118,243,0.35) 0%, rgba(107,140,242,0.35) 100%),
     url('../../assets/images/j.jpg') center right / cover no-repeat;
 
@@ -38,12 +37,12 @@
 
 
 
-/* ===== Layout containers (list scrolls, add row stays docked) ===== */
+/* ===== Layout: scrollable list + fixed add row ===== */
 .task-pane {
   display: flex;
   flex-direction: column;
-  flex: 1 1 auto;   /* take remaining height under the title */
-  min-height: 0;    /* critical so overflow can engage */
+  flex: 1 1 auto;   /* occupy remaining height below title */
+  min-height: 0;    /* allow overflow in flex container */
 }
 
 .task-scroll {
@@ -69,7 +68,6 @@
   height: 100%;
 }
 
-/* Tiles */
 .task-list li {
   width: 100%;
   min-height: var(--tile-h);
@@ -80,26 +78,68 @@
   align-items: center;
   gap: 12px;
 
-  background: #fff;
-  border: 1px solid rgba(0,0,0,.04);
+  background: #f5f7fb;                       /* soft grey like To Do */
+  border: 1px solid rgba(0,0,0,.06);
   border-radius: var(--tile-radius);
   box-shadow: var(--tile-shadow);
-  transition: box-shadow .2s ease, background-color .2s ease;
+  transition: 
+  background-color .15s ease,
+  border-color .15s ease,
+  box-shadow .15s ease,
+  transform .12s ease,
+  opacity .12s ease,
+  filter .12s ease;
 }
-.task-list li:hover { box-shadow: 0 4px 12px rgba(0,0,0,.12); }
 
-/* Drag visuals */
+.task-list li:hover {
+  background: #ffffff;                        /* goes a bit whiter on hover */
+  border-color: rgba(0,0,0,.08);
+  box-shadow: 0 2px 8px rgba(0,0,0,.12);      /* a touch more lift */
+}
+
+/* Drag preview = same look as the tile */
 .cdk-drag-preview {
+  display: block;                                   /* remove list-style marker */
   list-style: none !important;
-  background: #fff;
-  border-radius: var(--tile-radius);
-  padding: 12px 16px;
-  box-shadow: 0 8px 20px rgba(0,0,0,.15);
-}
-.cdk-drag-placeholder { opacity: .4; }
 
-/* ===== Add row (as a normal <li> in its own <ul>) ===== */
-/* Input fills the row neatly */
+  background: #f5f7fb;                             /* match .task-list li */
+  border: 1px solid rgba(0,0,0,.08);
+  border-radius: var(--tile-radius, 4px);
+  box-shadow: 0 8px 20px rgba(0,0,0,.18);
+
+  padding: 0;                                      /* match li (padding: 0) */
+  overflow: hidden;                                /* clip child overflow */
+  /* hard guarantee for rounding, even if something overflows */
+  clip-path: inset(0 round var(--tile-radius, 4px));
+}
+
+/* When dragging, make other tiles feel “inactive” */
+.task-list.cdk-drop-list-dragging
+  li:not(.cdk-drag-dragging):not(.cdk-drag-placeholder) {
+  transform: scale(0.985);          /* slight width-wise shrink */
+  opacity: .65;                     /* greyed out */
+  filter: saturate(.9) brightness(.98);
+  pointer-events: none;             /* no hover noise while dragging */
+}
+
+/*  the source tile pops a hair before it becomes the preview */
+.task-list li.cdk-drag-dragging {
+  transform: scale(1.01);
+}
+
+/* Preserve rounded corners in drag preview */
+.cdk-drag-preview > * { border-radius: inherit; }
+.cdk-drag-preview app-task-tile { background: transparent !important; }
+
+.cdk-drag-placeholder {
+  opacity: .35;
+  background: transparent;
+  border: 1px dashed rgba(0,0,0,.25);
+  border-radius: var(--tile-radius, 4px);
+}
+
+/* ===== Add row (rendered as a <li>) ===== */
+/* Input expands to fill row */
 .add-tile .new-task-input {
   flex: 1;
   border: 0;
@@ -109,34 +149,54 @@
 }
 .add-tile .new-task-input::placeholder { color: #8a9bb9; }
 
-/* Show checkbox only when typing (class-based) */
-.add-tile input[type="checkbox"] {
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity .15s ease;
+/* Add-row layout */
+.add-tile { display: flex; align-items: center; }
+
+/* Left icon placeholder (20×20) matching checkbox footprint */
+.add-leading {
+  position: relative;
+  width: 20px; height: 20px;
+  flex: 0 0 20px;
+  margin-right: 12px;  
+  margin-left: 8px;
 }
-.add-tile.typing input[type="checkbox"] {
-  opacity: 1;
-  pointer-events: auto;
+
+/* Plus icon via SVG mask (inherits currentColor) */
+.add-plus {
+  position: absolute; inset: 0;
+  display: grid; place-items: center;
+  width: 100%; height: 100%;
+  background: #6b7280; /* gray-500 */
+  -webkit-mask: url('../../assets/icons/add_24_regular.svg') no-repeat center / 16px 16px;
+          mask: url('../../assets/icons/add_24_regular.svg') no-repeat center / 16px 16px;
+  pointer-events: none; /* decorative only */
 }
+
+/* Hover styles when input is empty */
+.add-tile:hover .add-plus    { background: #1a73e8; }
+
+/* Swap: show plus by default; show checkbox while typing */
+.add-leading .todo-checkbox { display: none; }
+.add-tile.typing .add-leading .add-plus { display: none; }
+.add-tile.typing .add-leading .todo-checkbox { display: inline-block; }
 
 /* ===== Context Menu ===== */
 .context-menu {
-  position: fixed;       /* avoid clipping inside scroll area */
+  position: fixed;        /* prevent clipping inside scroll container */
   z-index: 9999;
   background: #fff;
   border: 1px solid #dfe3ea;
   border-radius: 8px;
   box-shadow: 0 8px 24px rgba(0,0,0,.15);
 
-  /* key bits */
+  /* Base sizing */
   padding: 4px 0;
-  min-width: 180px;        /* pick your width */
-  max-width: 240px;        /* (optional) */
-  overflow: hidden;        /* <-- prevents LI hover from spilling out */
+  min-width: 180px;        
+  max-width: 240px;        
+  overflow: hidden;        /* contain item hover/active states */
 }
 
-.context-menu * { box-sizing: border-box; } /* keep padding in-bounds */
+.context-menu * { box-sizing: border-box; }  /* normalize box sizing */
 
 .context-menu ul {
   margin: 0;
@@ -144,25 +204,63 @@
   list-style: none;
 }
 
+/* Layout/typography */
 .context-menu li {
-  border-radius: 0;
   display: flex;
   align-items: center;
-  gap: 8px;
-  width: 100%;             /* <-- item never wider than menu */
+  gap: 10px;
   padding: 10px 12px;
-  font-size: 14px;
-  color: #374151;
-  cursor: pointer;
+  border-radius: 8px;
+  color: #1f2937; /* slate-800 */
+}
+.context-menu li:hover {
+  background: #e8f0fe; /* very light blue */
 }
 
-.context-menu li:hover { background: #f3f4f6; }
+/* Separator line */
+.context-menu li.separator {
+  height: 1px;
+  padding: 0;
+  margin: 6px 8px;
+  background: #eef2f7;
+  pointer-events: none;
+}
 
-.context-menu li.delete { color: #d93025; }
+/* Right-aligned shortcut text */
+.context-menu .shortcut {
+  margin-left: auto;
+  font-size: 12px;
+  opacity: .65;
+}
+
+/* Submenu caret */
+.context-menu .submenu .chev { margin-left: auto; opacity: .5; }
+
+/* Icon masks: SVGs colored via currentColor */
+.context-menu .icon {
+  width: 20px; height: 20px; flex: 0 0 20px;
+  background: currentColor;
+  -webkit-mask: no-repeat center / contain;
+  mask: no-repeat center / contain;
+  opacity: .95;
+}
+
+/* Icon mask mappings (paths are relative to this file) */
+.context-menu .icon.sun   { -webkit-mask-image: url('../../assets/icons/weather_sunny_24_regular.svg'); mask-image: url('../../assets/icons/weather_sunny_24_regular.svg'); }
+.context-menu .icon.star  { -webkit-mask-image: url('../../assets/icons/star_24_regular.svg');            mask-image: url('../../assets/icons/star_24_regular.svg'); }
+.context-menu .icon.check { -webkit-mask-image: url('../../assets/icons/checkmark_circle_24_regular.svg'); mask-image: url('../../assets/icons/checkmark_circle_24_regular.svg'); }
+.context-menu .icon.cal   { -webkit-mask-image: url('../../assets/icons/calendar_ltr_24_regular.svg');     mask-image: url('../../assets/icons/calendar_ltr_24_regular.svg'); }
+.context-menu .icon.move  { -webkit-mask-image: url('../../assets/icons/folder_arrow_right_24_regular.svg'); mask-image: url('../../assets/icons/folder_arrow_right_24_regular.svg'); }
+.context-menu .icon.trash { -webkit-mask-image: url('../../assets/icons/delete_24_regular.svg');            mask-image: url('../../assets/icons/delete_24_regular.svg'); }
+
+
+/* Delete row styling */
+.context-menu li.delete { color: #d93025; }                    /* danger color */
+.context-menu li.delete:hover { background: #fdecec; }         /* subtle danger hover */
 
 /* Centered, clean page title */
 .page-title {
-  /* match the list width and center it */
+  /* Constrain width and center align */
   width: min(var(--column-max), calc(100% - var(--side-pad) * 2));
   margin: 24px auto 8px;
   padding: 8px 4px;
@@ -177,11 +275,11 @@
   letter-spacing: 0.2px;
   line-height: 1.2;
 
-  /* subtle pop over the blue gradient */
+  /* Text shadow for contrast on gradient */
   text-shadow: 0 1px 0 rgba(0,0,0,.25);
 }
 
-/* Make the divider tile fully transparent in all states */
+/* Force transparent divider tile in all states */
 .task-list li.completed-toggle,
 .task-list li.completed-toggle.cdk-drag,
 .task-list li.completed-toggle.cdk-drag-disabled {
@@ -195,7 +293,7 @@
   background: transparent !important;
 }
 
-/* Pretty pill button for the Completed divider */
+/* Pill-style button for the Completed toggle */
 .completed-toggle .completed-btn {
   appearance: none;
   -webkit-appearance: none;
@@ -203,17 +301,16 @@
   align-items: center;
   gap: 8px;
 
-  height: 36px;              /* tweak to taste */
+  height: 36px;             
   padding: 0 14px;
   border-radius: 9999px;     /* pill shape */
   border: 1px solid rgba(0,0,0,.08);
-  background: #fff;          /* visible (not transparent) */
+  background: #fff;         /* solid background */
   color: #1f2937;
   box-shadow: 0 1px 2px rgba(0,0,0,.08);
   cursor: pointer;
   transition: background-color .15s, border-color .15s, box-shadow .15s, transform .05s;
 
-  /* align left edge with your tiles’ inner padding (optional) */
   margin-left: 16px;
 }
 
@@ -243,5 +340,72 @@
   background: #e5edff;
   color: #1a73e8;
 }
+
+
+/* Modal overlay */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.35);
+  z-index: 10000;
+}
+
+/* Modal panel */
+.modal {
+  position: fixed;
+  z-index: 10001;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  min-width: 360px;
+  max-width: 90vw;
+  background: #f2f3ef;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  box-shadow: 0 20px 48px rgba(0,0,0,.22);
+  padding: 16px;
+}
+
+/* Typography + layout */
+.modal-title {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #175aeb;
+}
+.modal-body {
+  margin: 0 0 16px 0;
+  color: #374151;
+}
+.modal-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-start;
+}
+
+/* Buttons */
+.btn {
+  appearance: none;
+  -webkit-appearance: none;
+  border-radius: 8px;
+  font: inherit;
+  padding: 8px 14px;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+.btn-danger {
+  background: #9e150b;
+  color: #fff;
+  border-color: #d93025;
+}
+.btn-danger:hover { background: #c5271d; border-color: #c5271d; }
+.btn-ghost {
+  background: #eeeb41;
+  color: #111827;
+  border-color: #d1d5db;
+}
+.btn-ghost:hover { background: #f9fafb; border-color: #cbd5e1; }
+
 
 
